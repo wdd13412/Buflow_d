@@ -1,0 +1,87 @@
+function new_line:
+  intrinsic:
+  shape: (param 1, result)
+  type: (character(), character())
+  ReadNotWritten: (1, 0)
+  derivative: binary(call(none(), ident new_line, expressions(metavar C)), none(), expressions())
+
+function huge:
+  intrinsic:
+  shape: (param 1, result)
+  type: (metavar float, metavar float)
+  ReadNotWritten: (1, 0)
+  derivative: binary(call(none(), ident huge, expressions(metavar X)), none(), expressions())
+
+function findloc:
+  intrinsic:
+  shape: (param 1, param 2, param 3, result)  
+  type: (arrayType(metavar integer, dimColons()), metavar integer, metavar integer, metavar integer)
+  ReadNotWritten: (1, 1, 1, 0)
+  derivative: binary(call(none(), ident findloc, expressions(metavar A, metavar V, metavar D)), none(), expressions())
+
+function system:
+  intrinsic:
+  shape: (param 1, result)
+  type: (arrayType(character(), dimColons()), metavar integer)
+  ReadNotWritten: (1, 0)
+  derivative: binary(call(none(), ident system, expressions(metavar CMD)), none(), expressions())
+
+function dot_product:
+  intrinsic:
+  shape: (param 1, param 2, result)
+  type: (arrayType(metavar float, dimColons()), arrayType(metavar float, dimColons()), metavar float)
+  ReadNotWritten: (1, 1, 0)
+  derivative: binary(call(none(), ident dot_product, expressions(metavar A, metavar B)), none(), expressions(binary(metavar A, none(), metavar B), binary(metavar B, none(), metavar A)))
+
+function verify:
+  intrinsic:
+  shape: (param 1, param 2, result)
+  type: (arrayType(character(), dimColons()), arrayType(character(), dimColons()), metavar integer)
+  ReadNotWritten: (1, 1, 0)
+  derivative: binary(call(none(), ident verify, expressions(metavar S, metavar SET)), none(), expressions())
+
+subroutine move_alloc:
+  intrinsic:
+  shape: (param 1, param 2)  # 仅源指针和目标指针
+  type: (pointerType(metavar array), pointerType(metavar array))  # 通用数组指针类型
+  ReadNotWritten: (1, 0)
+  NotReadThenWritten: (0, 1)
+  derivative: binary(call(none(), ident move_alloc, expressions(metavar SRC, metavar DST)), none(), expressions())
+  
+subroutine move_alloc:
+  intrinsic:
+  shape: (param 1, param 2, param 3)
+  type: (pointerType(arrayType(character(), dimColons())), pointerType(arrayType(character(), dimColons())), metavar integer)
+  ReadNotWritten: (1, 0, 0)
+  NotReadThenWritten: (0, 1, 1)
+  derivative: binary(call(none(), ident move_alloc, expressions(metavar SRC, metavar DST, metavar IERR)), none(), expressions())
+
+function int:
+  intrinsic:
+  shape: (param 1, result)  
+  type: (metavar float, metavar integer)  
+  ReadNotWritten: (1, 0)
+  derivative: binary(call(none(), ident int, expressions(metavar X)), none(), expressions())
+  
+function int:
+  intrinsic:
+  shape: (param 1, param 2, result)
+  type: (metavar float, metavar integer, metavar integer)
+  ReadNotWritten: (1, 1, 0)
+  derivative: binary(call(none(), ident int, expressions(metavar X, metavar K)), none(), expressions(binary(metavar X, none(), realCst 1.0), binary(metavar K, none(), realCst 0.0)))
+
+subroutine dpotrf:
+  external:
+  shape: (param 1, param 2, param 3, param 4, param 5)
+  type: (character(), metavar integer, arrayType(metavar float, dimColons()), metavar integer, metavar integer)
+  ReadNotWritten: (1, 1, 0, 1, 0)
+  ReadThenWritten: (0, 0, 1, 0, 0)
+  derivative: binary(call(none(), ident dpotrf, expressions(metavar UPLO, metavar N, metavar A, metavar LDA, metavar INFO)), none(), expressions())
+
+subroutine dpotri:
+  external:
+  shape: (param 1, param 2, param 3, param 4, param 5)
+  type: (character(), metavar integer, arrayType(metavar float, dimColons()), metavar integer, metavar integer)
+  ReadNotWritten: (1, 1, 0, 1, 0)
+  ReadThenWritten: (0, 0, 1, 0, 0)
+  derivative: binary(call(none(), ident dpotri, expressions(metavar UPLO, metavar N, metavar A, metavar LDA, metavar INFO)), none(), expressions())
